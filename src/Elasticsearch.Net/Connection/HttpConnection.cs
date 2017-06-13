@@ -244,14 +244,12 @@ namespace Elasticsearch.Net
 		{
 			builder.Exception = exception;
 			var response = exception.Response as HttpWebResponse;
-			if (response != null)
-			{
-				builder.StatusCode = (int)response.StatusCode;
-				builder.Stream = response.GetResponseStream();
-				// https://github.com/elastic/elasticsearch-net/issues/2311
-				// if stream is null call dispose on response instead.
-				if (builder.Stream == null || builder.Stream == Stream.Null) response.Dispose();
-			}
+			if (response == null) return;
+			builder.StatusCode = (int)response.StatusCode;
+			builder.Stream = response.GetResponseStream();
+			// https://github.com/elastic/elasticsearch-net/issues/2311
+			// if stream is null call dispose on response instead.
+			if (builder.Stream == null || builder.Stream == Stream.Null) response.Dispose();
 		}
 
 		void IDisposable.Dispose() => this.DisposeManagedResources();
